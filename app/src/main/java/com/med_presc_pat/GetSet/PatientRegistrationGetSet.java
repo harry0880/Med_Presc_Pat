@@ -4,7 +4,7 @@ package com.med_presc_pat.GetSet;
  * Created by ABHISHEK on 5/19/2016.
  */
 public class PatientRegistrationGetSet {
-    String Name,Dob,Email,mobile,Address,State,Dtsrict;
+    String Name,Dob,Email,mobile,Address,State,District;
     public String getName() {
         return Name;
     }
@@ -54,11 +54,11 @@ public class PatientRegistrationGetSet {
     }
 
     public String getDtsrict() {
-        return Dtsrict;
+        return District;
     }
 
     public void setDtsrict(String dtsrict) {
-        Dtsrict = dtsrict;
+        District = dtsrict;
     }
 
     }
