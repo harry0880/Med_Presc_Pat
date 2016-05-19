@@ -137,7 +137,7 @@ public class DbHandler extends SQLiteOpenHelper {
         return districtlist;
     }
 
-    public Boolean SendDoctorRegistartion(PatientRegistrationGetSet obj)
+    public Boolean SendPatinetRegistartion(PatientRegistrationGetSet obj)
     {  String res= null;
         SoapObject request=new SoapObject(NameSpace, SendDoctorRegistration);
         PropertyInfo pi = new PropertyInfo();

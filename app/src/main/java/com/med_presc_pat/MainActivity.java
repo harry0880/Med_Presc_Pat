@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         etPhone=(EditText) findViewById(R.id.etContact);
         sp_District=(MaterialSpinner) findViewById(R.id.spDistrict);
         sp_State=(MaterialSpinner) findViewById(R.id.spState);
+        db=new DbHandler(context);
     }
 
     @Override
@@ -173,7 +174,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(PatientRegistrationGetSet... params) {
-            return null;
+            return db.SendPatinetRegistartion(params[0]);
+            
         }
 
         @Override
