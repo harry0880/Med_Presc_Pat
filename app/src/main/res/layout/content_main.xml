@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:met_floatingLabel="highlight"
-        android:inputType="textEmailAddress"
+        android:inputType="date"
         android:hint="Date Of Birth"
 
         />
@@ -88,4 +88,20 @@
         app:ms_alignLabels="false"
         android:paddingTop="10dp"
         />
+
+    <com.dd.processbutton.iml.ActionProcessButton
+        android:id="@+id/btnSignIn"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Submit"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        app:pb_colorComplete="@color/green_complete"
+        app:pb_colorNormal="@color/blue_normal"
+        app:pb_colorPressed="@color/blue_pressed"
+        app:pb_colorProgress="@color/purple_progress"
+        app:pb_textComplete="Success"
+        app:pb_textProgress="Wait" />
 </RelativeLayout>

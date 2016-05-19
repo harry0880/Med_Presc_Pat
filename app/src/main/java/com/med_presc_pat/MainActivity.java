@@ -14,7 +14,7 @@ import fr.ganfra.materialspinner.MaterialSpinner;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText etName,etPhone,etEmail;
+    EditText etName,etPhone,etEmail,etDOB,etAddress;
     MaterialSpinner sp_District,sp_State;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        initialize();
 
 
 
@@ -34,6 +35,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    void initialize()
+    {
+        etName=(EditText)findViewById(R.id.etName);
+        etEmail=(EditText)findViewById(R.id.etMail);
+        etDOB=(EditText)findViewById(R.id.etDOB);
+        etAddress=(EditText)findViewById(R.id.etAddres);
+        etPhone=(EditText) findViewById(R.id.etContact);
+        sp_District=(MaterialSpinner) findViewById(R.id.spDistrict);
+        sp_State=(MaterialSpinner) findViewById(R.id.spState);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
