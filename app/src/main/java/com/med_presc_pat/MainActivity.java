@@ -1,5 +1,6 @@
 package com.med_presc_pat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -47,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
         sp_State=(MaterialSpinner) findViewById(R.id.spState);
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(MainActivity.this,AndroidDatabaseManager.class));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

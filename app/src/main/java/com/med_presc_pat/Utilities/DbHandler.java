@@ -41,9 +41,6 @@ public class DbHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DbConstant.CREATE_TABLE_District_Master);
-        db.execSQL(DbConstant.CREATE_TABLE_Doctor_Reg_type);
-        db.execSQL(DbConstant.CREATE_TABLE_Institute_MASTER);
-        db.execSQL(DbConstant.CREATE_TABLE_SPECIALITY_MASTER);
         db.execSQL(DbConstant.CREATE_TABLE_STATE_MASTER);
     }
 
@@ -74,7 +71,7 @@ public class DbHandler extends SQLiteOpenHelper {
         String[] Response= res.split("#"),JsonNames={"State","District"};
         int lengthJsonArr ;
         try {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 2; i++) {
                 Response[i]="{ \""+JsonNames[i]+"\" :"+Response[i]+" }";
                 jsonResponse = new JSONObject(Response[i]);
                 JSONArray jsonMainNode = jsonResponse.optJSONArray(JsonNames[i]);
