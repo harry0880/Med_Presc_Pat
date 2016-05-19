@@ -7,6 +7,8 @@ import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.med_presc_pat.GetSet.PatientRegistrationGetSet;
 import com.med_presc_pat.SpinnerAdapters.District;
 import com.med_presc_pat.SpinnerAdapters.State;
 import org.json.JSONArray;
@@ -32,7 +34,8 @@ public class DbHandler extends SQLiteOpenHelper {
     String LoadMasterMathod = "Patientmaster";
     String SoapLinkMaster="http://tempuri.org/Patientmaster";
 
-
+    String SendDoctorRegistration = "PatientRegistration";
+    String SoapLinkSendDoctorRegistration="http://tempuri.org/PatientRegistration";
 
     public DbHandler(Context context) {
         super(context, DbConstant.DBNAME, null, DbConstant.DBVERSION);
@@ -134,7 +137,64 @@ public class DbHandler extends SQLiteOpenHelper {
         return districtlist;
     }
 
+    public Boolean SendDoctorRegistartion(PatientRegistrationGetSet obj)
+    {  String res= null;
+        SoapObject request=new SoapObject(NameSpace, SendDoctorRegistration);
+        PropertyInfo pi = new PropertyInfo();
 
+        pi.setName("name");
+        pi.setValue(obj.getName());
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi.setName("Dob");
+        pi.setValue(obj.getDob());
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi.setName("email");
+        pi.setValue(obj.getEmail());
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi.setName("mobile");
+        pi.setValue(obj.getMobile());
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi.setName("address");
+        pi.setValue(obj.getAddress());
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi.setName("stateid");
+        pi.setValue(obj.getState());
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi.setName("districtid");
+        pi.setValue(obj.getDtsrict());
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+
+        SoapSerializationEnvelope envolpe=new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envolpe.dotNet=true;
+        envolpe.setOutputSoapObject(request);
+        HttpTransportSE androidHTTP= new HttpTransportSE(URL);
+
+        try {
+            androidHTTP.call(SoapLinkSendDoctorRegistration, envolpe);
+            SoapPrimitive response = (SoapPrimitive)envolpe.getResponse();
+            res=response.toString();
+            //System.out.println(res);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
 //Viewing DB
     public ArrayList<Cursor> getData(String Query) {
         //get writable database
