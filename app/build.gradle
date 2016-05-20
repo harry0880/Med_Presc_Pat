@@ -29,4 +29,7 @@ dependencies {
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.github.ganfra:material-spinner:1.1.1'
     compile 'com.github.dmytrodanylyk.android-process-button:library:1.0.4'
+    compile 'com.wdullaer:materialdatetimepicker:2.3.0'
+    compile 'com.afollestad.material-dialogs:core:0.8.5.9'
+    compile 'swarajsaaj:otpreader:1.0'
 }

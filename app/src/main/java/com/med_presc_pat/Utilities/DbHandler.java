@@ -29,7 +29,8 @@ public class DbHandler extends SQLiteOpenHelper {
     JSONObject jsonResponse ;
 
     final String NameSpace="http://tempuri.org/";
-    String URL="http://192.168.0.100/Service.asmx";
+    //String URL="http://192.168.0.100/Service.asmx";
+    String URL="http://10.88.229.42:85/Service.asmx";
 
     String LoadMasterMathod = "Patientmaster";
     String SoapLinkMaster="http://tempuri.org/Patientmaster";
@@ -137,7 +138,7 @@ public class DbHandler extends SQLiteOpenHelper {
         return districtlist;
     }
 
-    public Boolean SendPatinetRegistartion(PatientRegistrationGetSet obj)
+    public String SendPatinetRegistartion(PatientRegistrationGetSet obj)
     {  String res= null;
         SoapObject request=new SoapObject(NameSpace, SendDoctorRegistration);
         PropertyInfo pi = new PropertyInfo();
@@ -147,31 +148,37 @@ public class DbHandler extends SQLiteOpenHelper {
         pi.setType(String.class);
         request.addProperty(pi);
 
+        pi = new PropertyInfo();
         pi.setName("Dob");
         pi.setValue(obj.getDob());
         pi.setType(String.class);
         request.addProperty(pi);
 
+        pi = new PropertyInfo();
         pi.setName("email");
         pi.setValue(obj.getEmail());
         pi.setType(String.class);
         request.addProperty(pi);
 
+        pi = new PropertyInfo();
         pi.setName("mobile");
         pi.setValue(obj.getMobile());
         pi.setType(String.class);
         request.addProperty(pi);
 
+        pi = new PropertyInfo();
         pi.setName("address");
         pi.setValue(obj.getAddress());
         pi.setType(String.class);
         request.addProperty(pi);
 
+        pi = new PropertyInfo();
         pi.setName("stateid");
         pi.setValue(obj.getState());
         pi.setType(String.class);
         request.addProperty(pi);
 
+        pi = new PropertyInfo();
         pi.setName("districtid");
         pi.setValue(obj.getDtsrict());
         pi.setType(String.class);
@@ -190,10 +197,10 @@ public class DbHandler extends SQLiteOpenHelper {
             //System.out.println(res);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return "Error";
         }
 
-        return true;
+        return res;
     }
 //Viewing DB
     public ArrayList<Cursor> getData(String Query) {

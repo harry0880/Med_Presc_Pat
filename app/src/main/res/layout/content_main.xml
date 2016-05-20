@@ -22,8 +22,10 @@
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/etName"
         android:layout_width="match_parent"
+        app:ms_floatingLabelColor="#303F9F"
         android:layout_height="wrap_content"
         app:met_floatingLabel="highlight"
+
         android:hint="Name of Doctor"
         />
 
@@ -31,6 +33,7 @@
         android:id="@+id/etDOB"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:ms_floatingLabelColor="#303F9F"
         app:met_floatingLabel="highlight"
         android:inputType="date"
         android:hint="Date Of Birth"
@@ -41,6 +44,7 @@
         android:id="@+id/etMail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:ms_floatingLabelColor="#303F9F"
         app:met_floatingLabel="highlight"
         android:inputType="textEmailAddress"
         android:hint="Email Id"
@@ -52,6 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:met_floatingLabel="highlight"
+        app:ms_floatingLabelColor="#303F9F"
         android:inputType="phone"
         android:hint="Contact"
         android:paddingTop="10dp"/>
@@ -60,9 +65,10 @@
         android:id="@+id/etAddres"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:ms_floatingLabelColor="#303F9F"
         app:met_floatingLabel="highlight"
         android:inputType="textPostalAddress"
-        android:hint="Contact"
+        android:hint="Address"
         android:paddingTop="10dp"/>
 
 
@@ -71,10 +77,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         app:ms_multiline="false"
-        app:ms_hint="State"
+        app:ms_hint="Select State"
         app:ms_enableFloatingLabel="true"
         app:ms_enableErrorLabel="false"
-        app:ms_floatingLabelText="Select State"
+        app:ms_floatingLabelText="State"
+        app:ms_floatingLabelColor="#303F9F"
         app:ms_thickness="2dp"
         app:ms_arrowSize="16dp"
         app:ms_alignLabels="false"
@@ -86,10 +93,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         app:ms_multiline="false"
-        app:ms_hint="District"
+        app:ms_hint="Select District"
         app:ms_enableFloatingLabel="true"
         app:ms_enableErrorLabel="false"
-        app:ms_floatingLabelText="Select District"
+        app:ms_floatingLabelColor="#303F9F"
+        app:ms_floatingLabelText="District"
         app:ms_thickness="2dp"
         app:ms_arrowSize="16dp"
         app:ms_alignLabels="false"
