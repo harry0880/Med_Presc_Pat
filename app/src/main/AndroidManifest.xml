@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.med_presc_pat">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -19,24 +20,32 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <receiver android:name="swarajsaaj.smscodereader.receivers.OtpReader">
+                <intent-filter>
+                    <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+                </intent-filter>
+            </receiver>
         </activity>
         <activity
             android:name=".Utilities.splash"
             android:label="@string/title_activity_splash"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".AndroidDatabaseManager" />
+        <activity
+            android:name=".MainScreen"
+            android:label="@string/title_activity_main_screen"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
-        <activity android:name=".AndroidDatabaseManager"></activity>
-        <receiver android:name="swarajsaaj.smscodereader.receivers.OtpReader">
+        <activity
+            android:name=".Running_no"
+            android:label="@string/title_activity_running_no"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </receiver>
+        </activity>
     </application>
 
 </manifest>

@@ -10,6 +10,8 @@ import android.util.Log;
 
 import com.med_presc_pat.GetSet.PatientRegistrationGetSet;
 import com.med_presc_pat.SpinnerAdapters.District;
+import com.med_presc_pat.SpinnerAdapters.InstituteName;
+import com.med_presc_pat.SpinnerAdapters.Speciality;
 import com.med_presc_pat.SpinnerAdapters.State;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,6 +48,9 @@ public class DbHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DbConstant.CREATE_TABLE_District_Master);
         db.execSQL(DbConstant.CREATE_TABLE_STATE_MASTER);
+        db.execSQL(DbConstant.CREATE_TABLE_SPECIALITY_MASTER);
+        db.execSQL(DbConstant.CREATE_TABLE_Institute_MASTER);
+        db.execSQL(DbConstant.CREATE_TABLE_DOC_INFO);
     }
 
     @Override
@@ -72,10 +77,10 @@ public class DbHandler extends SQLiteOpenHelper {
             return false;
         }
 
-        String[] Response= res.split("#"),JsonNames={"State","District"};
+        String[] Response= res.split("#"),JsonNames={"State","District","InstituteName","Doctor","Speciality"};
         int lengthJsonArr ;
         try {
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 5; i++) {
                 Response[i]="{ \""+JsonNames[i]+"\" :"+Response[i]+" }";
                 jsonResponse = new JSONObject(Response[i]);
                 JSONArray jsonMainNode = jsonResponse.optJSONArray(JsonNames[i]);
@@ -100,6 +105,32 @@ public class DbHandler extends SQLiteOpenHelper {
                         values.put(DbConstant.C_Dist_Name,jsonChildNode.optString("ds_detail").toString());
                         SQLiteDatabase writeableDB = getWritableDatabase();
                         writeableDB.insert(DbConstant.T_District_Master, null, values);
+                        writeableDB.close();
+                    }
+                    if(i==2)
+                    {
+                        values.put(DbConstant.C_Doc_Inst_ID,jsonChildNode.optString("Instid").toString());
+                        values.put(DbConstant.C_Doc_Inst_Detail,jsonChildNode.optString("Instname").toString());
+                        SQLiteDatabase writeableDB = getWritableDatabase();
+                        writeableDB.insert(DbConstant.T_Doc_Inst, null, values);
+                        writeableDB.close();
+                    }
+                    if(i==3)
+                    {
+                        values.put(DbConstant.C_Doc_Id,jsonChildNode.optString("Doctorid").toString());
+                        values.put(DbConstant.C_Doc_Name,jsonChildNode.optString("Doctorname").toString());
+                        values.put(DbConstant.C_Doc_Spl_ID,jsonChildNode.optString("specialityid").toString());
+                        values.put(DbConstant.C_Doc_Inst_ID,jsonChildNode.optString("instituteid").toString());
+                        SQLiteDatabase writeableDB = getWritableDatabase();
+                        writeableDB.insert(DbConstant.T_Doc_Details, null, values);
+                        writeableDB.close();
+                    }
+                    if(i==4)
+                    {
+                        values.put(DbConstant.C_Doc_Spl_ID,jsonChildNode.optString("splid").toString());
+                        values.put(DbConstant.C_Doc_Spl_Detail,jsonChildNode.optString("spldesc").toString());
+                        SQLiteDatabase writeableDB = getWritableDatabase();
+                        writeableDB.insert(DbConstant.T_Doc_Spl_Type, null, values);
                         writeableDB.close();
                     }
 
@@ -243,5 +274,29 @@ public class DbHandler extends SQLiteOpenHelper {
         }
 
 
+    }
+
+    public ArrayList<InstituteName> getInstName()
+    {
+        SQLiteDatabase db=getReadableDatabase();
+        Cursor cr=db.rawQuery("select * from "+DbConstant.T_Doc_Inst+";",null);
+        cr.moveToFirst();
+        ArrayList<InstituteName> instituteNames=new ArrayList<InstituteName>();
+        do {
+            instituteNames.add(new InstituteName(cr.getString(0),cr.getString(1)));
+        }while (cr.moveToNext());
+        return instituteNames;
+    }
+
+    public ArrayList<Speciality> getSpecName()
+    {
+        SQLiteDatabase db=getReadableDatabase();
+        Cursor cr=db.rawQuery("select * from "+DbConstant.T_Doc_Spl_Type+";",null);
+        cr.moveToFirst();
+        ArrayList<Speciality> specialities=new ArrayList<Speciality>();
+        do {
+            specialities.add(new Speciality(cr.getString(0),cr.getString(1)));
+        }while (cr.moveToNext());
+        return specialities;
     }
 }

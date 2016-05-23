@@ -32,4 +32,5 @@ dependencies {
     compile 'com.wdullaer:materialdatetimepicker:2.3.0'
     compile 'com.afollestad.material-dialogs:core:0.8.5.9'
     compile 'swarajsaaj:otpreader:1.0'
+    compile 'com.github.medyo:fancybuttons:1.8.1'
 }

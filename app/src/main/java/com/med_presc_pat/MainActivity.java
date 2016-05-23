@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ButtonBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.MotionEvent;
@@ -28,6 +29,7 @@ import com.dd.processbutton.iml.ActionProcessButton;
 import com.med_presc_pat.GetSet.PatientRegistrationGetSet;
 import com.med_presc_pat.SpinnerAdapters.State;
 import com.med_presc_pat.SpinnerAdapters.District;
+import com.med_presc_pat.Utilities.DbConstant;
 import com.med_presc_pat.Utilities.DbHandler;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -48,6 +50,7 @@ import swarajsaaj.smscodereader.receivers.OtpReader;
 public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,OTPListener {
     DbHandler db;
     MaterialEditText etName,etPhone,etEmail,etDOB,etAddress;
+
     MaterialSpinner sp_District,sp_State;
     Context context;
     ActionProcessButton btnSignIn;
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     MaterialDialog processdialog;
     SharedPreferences prefs;
     Boolean otpaccepted=false;
+    String glbl_otp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +70,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        initialize();
         context = this;
+        initialize();
         setStateSpinner();
         setDistrictSpinner(initDistrict);
         getset = new PatientRegistrationGetSet();
@@ -143,11 +147,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                             now.get(Calendar.MONTH),
                             now.get(Calendar.DAY_OF_MONTH)
                     );
-
-
                     dpd.setThemeDark(true);
                     dpd.setAccentColor(Color.parseColor("#3F51B5"));
-
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         dpd.setAllowEnterTransitionOverlap(true);
                         dpd.setAllowReturnTransitionOverlap(true);
@@ -155,19 +156,14 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                     // dpd.dismissOnPause(dismissDate.isChecked());
                     dpd.showYearPickerFirst(true);
                     dpd.show(getFragmentManager(), "Datepickerdialog");
-
                 }
 
                 return true;
             }
         });
 
-        etDOB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-    });
     }
+
 
     void initialize()
     {
@@ -184,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         db=new DbHandler(MainActivity.this);
         btnSignIn = (ActionProcessButton) findViewById(R.id.btnSignIn);
         btnSignIn.setMode(ActionProcessButton.Mode.ENDLESS);
+
 
     }
 
@@ -245,14 +242,12 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     public void otpReceived(String messageText) {
         String otp[]=messageText.split(" ");
         SharedPreferences prefs = context.getSharedPreferences("OTP", MODE_PRIVATE);
-        String otp1 = prefs.getString("otp","notreceived");
+       glbl_otp = prefs.getString("otp","notreceived");
 
-        if(otp1.equals(otp[6])) {
+        if(glbl_otp.equals(otp[6])) {
             processdialog.dismiss();
            context.getSharedPreferences("OTP", MODE_PRIVATE).edit().clear().commit();
-           SweetAlertDialog di=new SweetAlertDialog(context,SweetAlertDialog.SUCCESS_TYPE);
-            di.setTitleText("Registered and Verified");
-            di.show();
+            OTPSccessful();
         }
     }
 
@@ -276,23 +271,19 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
         }
 
-        /*static newInstance()
-        {
-            Calendar now = Calendar.getInstance();
-            DatePickerDialog dpd = DatePickerDialog.newInstance(
-                    MainActivity.this,
-                    now.get(Calendar.YEAR),
-                    now.get(Calendar.MONTH),
-                    now.get(Calendar.DAY_OF_MONTH)
-            );
-            dpd.show(getFragmentManager(), "Datepickerdialog");
-        }*/
+
 
         @Override
         protected void onPostExecute(String otp) {
-            SharedPreferences.Editor prefs = context.getSharedPreferences("OTP", MODE_PRIVATE).edit();
-           prefs.putString("otp",otp);
+            SharedPreferences.Editor prefs = context.getSharedPreferences(DbConstant.sp_OTP, MODE_PRIVATE).edit();
+           prefs.putString(DbConstant.sp_OTP_otp,otp);
             prefs.commit();
+
+            prefs = context.getSharedPreferences(DbConstant.sp_User_Info, MODE_PRIVATE).edit();
+            prefs.putString(DbConstant.sp_User_Info_Name,getset.getName());
+            prefs.putString(DbConstant.sp_User_Info_Phone,getset.getMobile());
+            prefs.commit();
+
             if(dialog.isShowing() && !otp.equals("Error"))
             {
                 dialog.dismiss();
@@ -302,14 +293,14 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                           @Override
                           public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                               processdialog.dismiss();
-                              p();
+                              ManualOTP();
                           }
                       })
                 .show();
 
                 new Handler().postDelayed(new Runnable() {
                     public void run() {
-                     
+
                        processdialog.dismiss();
                     }
                 }, 60*1000);
@@ -318,22 +309,35 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             {
                 dialog.dismiss();
                 new SweetAlertDialog(context,SweetAlertDialog.ERROR_TYPE).setTitleText("Error!!!").show();
-
             }
             super.onPostExecute(otp);
         }
-        void p()
-        {
-            new MaterialDialog.Builder(context)
-                    .title("")
-                    .content("")
-                    .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
-                    .input("OTP","", new MaterialDialog.InputCallback() {
-                        @Override
-                        public void onInput(MaterialDialog dialog, CharSequence input) {
-                            // Do something
-                        }
-                    }).show();
-        }
+
+    }
+
+    void OTPSccessful()
+    {
+        SweetAlertDialog di=new SweetAlertDialog(context,SweetAlertDialog.SUCCESS_TYPE);
+        di.setTitleText("Registered and Verified");
+        di.show();
+    }
+
+    void ManualOTP()
+    {
+        new MaterialDialog.Builder(context)
+                .title("")
+                .content("")
+                .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
+                .input("OTP","", new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        Toast.makeText(context,input,Toast.LENGTH_SHORT).show();
+                    }
+                }).neutralText("Enter OTP").title("OTP").positiveText("Submit").onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+               /* if(glbl_otp.equals())*/
+            }
+        }).show();
     }
 }

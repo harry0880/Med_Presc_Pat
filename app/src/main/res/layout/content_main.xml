@@ -48,7 +48,6 @@
         app:met_floatingLabel="highlight"
         android:inputType="textEmailAddress"
         android:hint="Email Id"
-
         />
 
     <com.rengwuxian.materialedittext.MaterialEditText
