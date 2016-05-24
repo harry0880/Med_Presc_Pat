@@ -7,7 +7,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.med_presc_pat.SpinnerAdapters.InstituteName;
 import com.med_presc_pat.SpinnerAdapters.Speciality;
@@ -31,6 +33,35 @@ public class Running_no extends AppCompatActivity {
         context=this;
         initialize();
 
+        spInstitute.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position>0)
+                {
+                    InstituteName instituteName=(InstituteName) spInstitute.getSelectedItem();
+                    setSpSpeciality(instituteName.getInstituteId());
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spSpeciality.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position>0)
+                {
+                    Speciality spec=(Speciality) spSpeciality.getSelectedItem();
+
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -45,7 +76,10 @@ public class Running_no extends AppCompatActivity {
     void initialize()
     {
         db=new DbHandler(context);
+        spSpeciality=(MaterialSpinner)findViewById(R.id.spSpeciality);
+        spInstitute=(MaterialSpinner)findViewById(R.id.spInstitute);
         setInstName();
+
     }
 
     void setInstName()
@@ -55,9 +89,9 @@ public class Running_no extends AppCompatActivity {
         spInstitute.setAdapter(instituteNameAdapter);
     }
 
-    void setSpSpeciality()
+    void setSpSpeciality(String Speciality)
     {
-        specialityAdapter=new ArrayAdapter<Speciality>(this,android.R.layout.simple_spinner_item,db.getSpecName());
+        specialityAdapter=new ArrayAdapter<Speciality>(this,android.R.layout.simple_spinner_item,db.getSpecName(Speciality));
         specialityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spSpeciality.setAdapter(specialityAdapter);
     }

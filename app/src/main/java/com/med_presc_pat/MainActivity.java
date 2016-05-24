@@ -2,6 +2,7 @@ package com.med_presc_pat;
 
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ButtonBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.MotionEvent;
@@ -157,11 +157,9 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                     dpd.showYearPickerFirst(true);
                     dpd.show(getFragmentManager(), "Datepickerdialog");
                 }
-
                 return true;
             }
         });
-
     }
 
 
@@ -248,13 +246,16 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             processdialog.dismiss();
            context.getSharedPreferences("OTP", MODE_PRIVATE).edit().clear().commit();
             OTPSccessful();
+            /*ContentValues cv=new ContentValues();
+            cv.put(DbConstant.C_User_isverified,"true");
+            db.update_Patient_Info(cv);*/
         }
     }
 
     private class SubmitPatientDetails extends AsyncTask<PatientRegistrationGetSet,Void,String>
     {
     ProgressDialog dialog=new ProgressDialog(context);
-
+    PatientRegistrationGetSet getset;
 
         @Override
         protected void onPreExecute() {
@@ -267,25 +268,37 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
         @Override
         protected String doInBackground(PatientRegistrationGetSet... params) {
+            getset=params[0];
             return db.SendPatinetRegistartion(params[0]);
 
         }
-
-
 
         @Override
         protected void onPostExecute(String otp) {
             SharedPreferences.Editor prefs = context.getSharedPreferences(DbConstant.sp_OTP, MODE_PRIVATE).edit();
            prefs.putString(DbConstant.sp_OTP_otp,otp);
             prefs.commit();
-
-            prefs = context.getSharedPreferences(DbConstant.sp_User_Info, MODE_PRIVATE).edit();
-            prefs.putString(DbConstant.sp_User_Info_Name,getset.getName());
-            prefs.putString(DbConstant.sp_User_Info_Phone,getset.getMobile());
-            prefs.commit();
-
             if(dialog.isShowing() && !otp.equals("Error"))
             {
+
+                 prefs = context.getSharedPreferences(DbConstant.T_User_Info, MODE_PRIVATE).edit();
+                prefs.putString(DbConstant.C_User_Name,getset.getName());
+                prefs.putString(DbConstant.C_User_Phone,getset.getMobile());
+                prefs.putString(DbConstant.C_User_Email,getset.getEmail());
+                prefs.putString(DbConstant.C_User_District,getset.getDtsrict());
+                prefs.putString(DbConstant.C_User_State,getset.getState());
+                prefs.commit();
+
+               /* ContentValues cv=new ContentValues();
+                cv.put(DbConstant.C_User_Name,getset.getName());
+                cv.put(DbConstant.C_User_Phone,getset.getMobile());
+                cv.put(DbConstant.C_User_Email,getset.getEmail());
+                cv.put(DbConstant.C_User_District,getset.getDtsrict());
+                cv.put(DbConstant.C_User_State,getset.getState());
+                cv.put(DbConstant.C_User_isverified,"false");
+                db.insert_Patient_Info(cv);*/
+
+
                 dialog.dismiss();
               processdialog = new MaterialDialog.Builder(context)
                         .progress(true,100)

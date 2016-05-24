@@ -2,6 +2,7 @@ package com.med_presc_pat.Utilities;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -30,6 +31,8 @@ import java.util.ArrayList;
 public class DbHandler extends SQLiteOpenHelper {
     JSONObject jsonResponse ;
 
+    Context context;
+
     final String NameSpace="http://tempuri.org/";
     //String URL="http://192.168.0.100/Service.asmx";
     String URL="http://10.88.229.42:85/Service.asmx";
@@ -42,6 +45,7 @@ public class DbHandler extends SQLiteOpenHelper {
 
     public DbHandler(Context context) {
         super(context, DbConstant.DBNAME, null, DbConstant.DBVERSION);
+        this.context=context;
     }
 
     @Override
@@ -111,6 +115,8 @@ public class DbHandler extends SQLiteOpenHelper {
                     {
                         values.put(DbConstant.C_Doc_Inst_ID,jsonChildNode.optString("Instid").toString());
                         values.put(DbConstant.C_Doc_Inst_Detail,jsonChildNode.optString("Instname").toString());
+                        values.put(DbConstant.C_Doc_Inst_Dcode,jsonChildNode.optString("HealthInstituteDCode").toString());
+                        values.put(DbConstant.C_Doc_Inst_Scode,jsonChildNode.optString("HealthInstituteSCode").toString());
                         SQLiteDatabase writeableDB = getWritableDatabase();
                         writeableDB.insert(DbConstant.T_Doc_Inst, null, values);
                         writeableDB.close();
@@ -278,8 +284,13 @@ public class DbHandler extends SQLiteOpenHelper {
 
     public ArrayList<InstituteName> getInstName()
     {
+        SharedPreferences preferences =context.getSharedPreferences(DbConstant.T_User_Info,Context.MODE_PRIVATE);
+        String state=preferences.getString(DbConstant.C_User_State,"null");
+        String district =preferences.getString(DbConstant.C_User_District,"null");
+
         SQLiteDatabase db=getReadableDatabase();
-        Cursor cr=db.rawQuery("select * from "+DbConstant.T_Doc_Inst+";",null);
+        Cursor cr=db.rawQuery("select * from "+DbConstant.T_Doc_Inst+" where "+ DbConstant.C_Doc_Inst_Scode +"='"+state+"' and "+DbConstant.C_Doc_Inst_Dcode+"='"+district+"';",null);
+        int cnt=cr.getCount();
         cr.moveToFirst();
         ArrayList<InstituteName> instituteNames=new ArrayList<InstituteName>();
         do {
@@ -288,15 +299,30 @@ public class DbHandler extends SQLiteOpenHelper {
         return instituteNames;
     }
 
-    public ArrayList<Speciality> getSpecName()
+    public ArrayList<Speciality> getSpecName(String spec)
     {
         SQLiteDatabase db=getReadableDatabase();
-        Cursor cr=db.rawQuery("select * from "+DbConstant.T_Doc_Spl_Type+";",null);
+        Cursor cr=db.rawQuery("select * from "+DbConstant.T_Doc_Spl_Type+" where "+DbConstant.C_Doc_Spl_ID+"="+spec+";",null);
         cr.moveToFirst();
         ArrayList<Speciality> specialities=new ArrayList<Speciality>();
         do {
             specialities.add(new Speciality(cr.getString(0),cr.getString(1)));
         }while (cr.moveToNext());
         return specialities;
+    }
+
+
+
+
+    public void insert_Patient_Info(ContentValues cv)
+    {
+        SQLiteDatabase db=getWritableDatabase();
+        db.insert(DbConstant.T_User_Info,null,cv);
+    }
+
+    public void update_Patient_Info(ContentValues cv)
+    {
+        SQLiteDatabase db=getReadableDatabase();
+        db.update(DbConstant.T_User_Info,cv,null,null);
     }
 }

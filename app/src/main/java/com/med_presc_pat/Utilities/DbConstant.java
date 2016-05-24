@@ -20,9 +20,13 @@ public class DbConstant {
     public static final String sp_OTP="OTP";
     public static final String sp_OTP_otp="otp";
 
-    public static final String sp_User_Info="UserInfo";
-    public static final String sp_User_Info_Name="Name";
-    public static final String sp_User_Info_Phone="Phone";
+    public static final String T_User_Info="UserInfo";
+    public static final String C_User_Name="Name";
+    public static final String C_User_Phone="Phone";
+    public static final String C_User_Email="Email";
+    public static final String C_User_District="District";
+    public static final String C_User_State="State";
+    public static final String C_User_isverified="isVerified";
 
     public  static final String T_Doc_Spl_Type="TBLDocSplMaster";
     public  static final String C_Doc_Spl_ID="DocSplID";
@@ -31,6 +35,8 @@ public class DbConstant {
     public  static final String T_Doc_Inst="TBLInsMaster";
     public  static final String C_Doc_Inst_ID="InstID";
     public  static final String C_Doc_Inst_Detail="DocInstName";
+    public  static final String C_Doc_Inst_Dcode="InstDcode";
+    public  static final String C_Doc_Inst_Scode="DocInstScode";
 
     public  static final String T_Doc_Details="TBLDoc";
     public  static final String C_Doc_Id="Doc_ID";
@@ -49,13 +55,21 @@ public class DbConstant {
             + C_Doc_Spl_Detail/*1*/ +" TEXT);";
 
     public static final String CREATE_TABLE_Institute_MASTER = "CREATE TABLE "+ T_Doc_Inst + "(" + C_Doc_Inst_ID/*0*/ + " TEXT,"
-            + C_Doc_Inst_Detail/*1*/ +" TEXT);";
+            + C_Doc_Inst_Detail/*1*/ +" TEXT,"
+            + C_Doc_Inst_Dcode +" TEXT,"
+            + C_Doc_Inst_Scode +" TEXT);";
 
     public static final String CREATE_TABLE_DOC_INFO="CREATE TABLE "+ T_Doc_Details + " (" + C_Doc_Id + " TEXT,"
             + C_Doc_Name +" TEXT,"
             +C_Doc_Spl_ID +" TEXT,"
             + C_Doc_Inst_ID+" TEXT);";
 
+    public static final String Create_Table_User_Info= "CREATE TABLE "+T_User_Info + " (" + C_User_Name +" TEXT,"
+            + C_User_Phone + " TEXT,"
+            + C_User_Email + " TEXT,"
+            + C_User_District + " TEXT,"
+            + C_User_State+ " TEXT,"
+            + C_User_isverified + " TEXT);";
 
 
 }
