@@ -14,6 +14,7 @@ import com.med_presc_pat.MainActivity;
 import com.med_presc_pat.MainScreen;
 import com.med_presc_pat.R;
 import com.med_presc_pat.Running_no;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.File;
 
@@ -21,12 +22,14 @@ public class splash extends AppCompatActivity {
 
     DbHandler dbh;
     Context context;
+    String instanceId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context=this;
         setContentView(R.layout.activity_splash);
         dbh=new DbHandler(splash.this);
+      //  instanceId= FirebaseInstanceId.getInstance().getToken();
         if(!doesDatabaseExist(getApplicationContext(),DbConstant.DBNAME))
         new LoadMaster().execute();
         else
@@ -50,7 +53,6 @@ public class splash extends AppCompatActivity {
             else {
                 new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE).setTitleText("Opps").setContentText("Please check Internet Connection and try again!!!").show();
             }
-
         }
     }
     private static boolean doesDatabaseExist(Context context, String dbName) {

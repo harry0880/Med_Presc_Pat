@@ -40,7 +40,6 @@ import java.util.Calendar;
 import android.os.Handler;
 import android.widget.Toast;
 
-import java.util.logging.LogRecord;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import fr.ganfra.materialspinner.MaterialSpinner;

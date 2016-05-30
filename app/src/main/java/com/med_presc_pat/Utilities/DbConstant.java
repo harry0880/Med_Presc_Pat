@@ -43,6 +43,13 @@ public class DbConstant {
     public  static final String C_Doc_Name="DocName";
 
 
+    public static final String ShiftId="ShiftId";
+    public static final String ShiftTime="ShiftTime";
+    public static final String ShiftAvailableslots="ShiftAvailableSlots";
+
+/*
+    public  static final String ShiftTime=*/
+
 
     public static final String CREATE_TABLE_STATE_MASTER = "CREATE TABLE "+ T_State_Master + "(" + C_Scode/*0*/ + " TEXT,"
             + C_Sname/*1*/ +" TEXT);";

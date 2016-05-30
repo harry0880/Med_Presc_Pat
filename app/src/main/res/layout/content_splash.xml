@@ -12,4 +12,9 @@
     tools:context="com.med_presc_pat.Utilities.splash"
     tools:showIn="@layout/activity_splash">
 
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"/>
+
 </RelativeLayout>

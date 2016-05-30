@@ -9,8 +9,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.med_presc_pat.Appointment;
 import com.med_presc_pat.GetSet.PatientRegistrationGetSet;
+import com.med_presc_pat.GetSet.RunningNumberGetSet;
 import com.med_presc_pat.SpinnerAdapters.District;
+import com.med_presc_pat.SpinnerAdapters.Doctor;
 import com.med_presc_pat.SpinnerAdapters.InstituteName;
 import com.med_presc_pat.SpinnerAdapters.Speciality;
 import com.med_presc_pat.SpinnerAdapters.State;
@@ -30,7 +33,7 @@ import java.util.ArrayList;
  */
 public class DbHandler extends SQLiteOpenHelper {
     JSONObject jsonResponse ;
-
+    Appointment app=new Appointment();
     Context context;
 
     final String NameSpace="http://tempuri.org/";
@@ -42,6 +45,15 @@ public class DbHandler extends SQLiteOpenHelper {
 
     String SendDoctorRegistration = "PatientRegistration";
     String SoapLinkSendDoctorRegistration="http://tempuri.org/PatientRegistration";
+
+    String SendRunningNo="GenerateCurrentAppoinmentNumber";
+    String SoapSend_RunningNo="http://tempuri.org/GenerateCurrentAppoinmentNumber";
+
+    String GetSlots="GetSlots";
+    String Soap_GetSlots="http://tempuri.org/GetSlots";
+
+    String GenerateAppointmentNumber="GenerateAppoinmentNumber";
+    String Soap_GenerateAppointmentNumber="http://tempuri.org/GenerateAppoinmentNumber";
 
     public DbHandler(Context context) {
         super(context, DbConstant.DBNAME, null, DbConstant.DBVERSION);
@@ -299,16 +311,34 @@ public class DbHandler extends SQLiteOpenHelper {
         return instituteNames;
     }
 
-    public ArrayList<Speciality> getSpecName(String spec)
+    public ArrayList<Speciality> getSpecName()
     {
         SQLiteDatabase db=getReadableDatabase();
-        Cursor cr=db.rawQuery("select * from "+DbConstant.T_Doc_Spl_Type+" where "+DbConstant.C_Doc_Spl_ID+"="+spec+";",null);
+        Cursor cr=db.rawQuery("select * from "+DbConstant.T_Doc_Spl_Type+";",null);
         cr.moveToFirst();
         ArrayList<Speciality> specialities=new ArrayList<Speciality>();
         do {
             specialities.add(new Speciality(cr.getString(0),cr.getString(1)));
         }while (cr.moveToNext());
         return specialities;
+    }
+
+    public ArrayList<Doctor> getDocList(String specid,String instid)
+    {
+        SQLiteDatabase db=getReadableDatabase();
+        Cursor cr=db.rawQuery("select * from "+DbConstant.T_Doc_Details+" where "+DbConstant.C_Doc_Spl_ID+"="+specid+" and "+DbConstant.C_Doc_Inst_ID+"="+instid+";",null);
+        cr.moveToFirst();
+        ArrayList<Doctor> doctors=new ArrayList<Doctor>();
+        if(cr.getCount()<=0)
+        {
+            doctors.add(new Doctor("0","No Doctors Available"));
+            return doctors;
+
+        }
+        do {
+            doctors.add(new Doctor(cr.getString(0),cr.getString(1)));
+        }while (cr.moveToNext());
+        return doctors;
     }
 
 
@@ -324,5 +354,192 @@ public class DbHandler extends SQLiteOpenHelper {
     {
         SQLiteDatabase db=getReadableDatabase();
         db.update(DbConstant.T_User_Info,cv,null,null);
+    }
+
+    public String CallWebService_Running_no(RunningNumberGetSet obj,String phone)
+    {
+        String res= null;
+        SoapObject request=new SoapObject(NameSpace, SendRunningNo);
+        PropertyInfo pi = new PropertyInfo();
+
+        pi.setName("Mobile");
+        pi.setValue(phone);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("Instituteid");
+        pi.setValue(obj.getInstId());
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("specialityid");
+        pi.setValue(obj.getSpecialityId());
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("DoctorId");
+        pi.setValue(/*obj.getDocId()*/"11002");
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("Createdby");
+        pi.setValue(phone);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+
+        SoapSerializationEnvelope envolpe=new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envolpe.dotNet=true;
+        envolpe.setOutputSoapObject(request);
+        HttpTransportSE androidHTTP= new HttpTransportSE(URL);
+
+        try {
+            androidHTTP.call(SoapSend_RunningNo, envolpe);
+            SoapPrimitive response = (SoapPrimitive)envolpe.getResponse();
+            res=response.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error";
+        }
+        return res;
+    }
+
+
+    public ContentValues[] CallWebService_GetSlots(RunningNumberGetSet getset,String Date)
+    {
+
+        String res=null ;
+        SoapObject request=new SoapObject(NameSpace, GetSlots);
+        PropertyInfo pi = new PropertyInfo();
+
+        pi.setName("InstituteId");
+        pi.setValue(getset.getInstId());
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("specialityId");
+        pi.setValue(getset.getSpecialityId());
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("DoctorId");
+        pi.setValue(/*getset.getDocId()*/"11002");
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("SlotDate");
+        pi.setValue(Date);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        SoapSerializationEnvelope envolpe=new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envolpe.dotNet=true;
+        envolpe.setOutputSoapObject(request);
+        HttpTransportSE androidHTTP= new HttpTransportSE(URL);
+
+        try {
+            androidHTTP.call(Soap_GetSlots, envolpe);
+            SoapPrimitive response = (SoapPrimitive)envolpe.getResponse();
+            res=response.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        int lengthJsonArr;
+        ContentValues[] values;
+        try {
+            jsonResponse = new JSONObject(res);
+            JSONArray jsonMainNode = jsonResponse.optJSONArray("Slots");
+            lengthJsonArr = jsonMainNode.length();
+            values=new ContentValues[lengthJsonArr];
+            for(int j=0; j < lengthJsonArr; j++) {
+                JSONObject jsonChildNode = jsonMainNode.getJSONObject(j);
+               values[j]=new ContentValues();
+                values[j].put(DbConstant.ShiftId, jsonChildNode.optString("Shiftid").toString());
+                values[j].put(DbConstant.ShiftTime, jsonChildNode.optString("Shifttime").toString());
+                values[j].put(DbConstant.ShiftAvailableslots, jsonChildNode.optString("Shiftavailableslots").toString());
+            }
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+
+        return values;
+    }
+
+
+    public String call_WebService_Appointment(RunningNumberGetSet getset,String Date,String Id,String Createdby)
+    {
+
+        String res=null ;
+        SoapObject request=new SoapObject(NameSpace, GenerateAppointmentNumber);
+        PropertyInfo pi = new PropertyInfo();
+
+        pi.setName("Mobile");
+        pi.setValue(Createdby);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi=new PropertyInfo();
+        pi.setName("Instituteid");
+        pi.setValue(getset.getInstId());
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("specialityid");
+        pi.setValue(getset.getSpecialityId());
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("DoctorId");
+        pi.setValue(/*getset.getDocId()*/"11002");
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("Createdby");
+        pi.setValue(Createdby);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("Shiftid");
+        pi.setValue(Id);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("AppoinmentDate");
+        pi.setValue(Date);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+
+        SoapSerializationEnvelope envolpe=new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envolpe.dotNet=true;
+        envolpe.setOutputSoapObject(request);
+        HttpTransportSE androidHTTP= new HttpTransportSE(URL);
+
+        try {
+            androidHTTP.call(Soap_GenerateAppointmentNumber, envolpe);
+            SoapPrimitive response = (SoapPrimitive)envolpe.getResponse();
+            res=response.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error";
+        }
+        return res;
     }
 }

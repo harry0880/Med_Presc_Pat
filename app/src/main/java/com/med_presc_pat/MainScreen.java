@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
-import android.widget.Button;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -22,7 +21,7 @@ import mehdi.sakout.fancybuttons.FancyButton;
 public class MainScreen extends AppCompatActivity {
 Context context;
     String glbl_otp;
-    FancyButton btn_newReg,btn_Running;
+    FancyButton btn_newReg,btn_Running,btn_Appointment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +48,12 @@ Context context;
                 startActivity(new Intent(MainScreen.this,Running_no.class));
             }
         });
+        btn_Appointment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainScreen.this,Appointment.class));
+            }
+        });
 
     }
 
@@ -58,6 +63,7 @@ Context context;
         glbl_otp = prefs.getString(DbConstant.sp_OTP_otp,"notreceived");
         btn_newReg=(FancyButton) findViewById(R.id.btn_newReg);
         btn_Running=(FancyButton) findViewById(R.id.btn_Runningno);
+        btn_Appointment=(FancyButton) findViewById(R.id.btn_Appointment);
     }
 
     void ManualOTP()
