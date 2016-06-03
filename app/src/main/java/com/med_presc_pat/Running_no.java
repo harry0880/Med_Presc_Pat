@@ -56,6 +56,7 @@ public class Running_no extends AppCompatActivity {
                     InstituteName instituteName=(InstituteName) spInstitute.getSelectedItem();
                     getset.setInstId(instituteName.getInstituteId());
                 }
+
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -83,8 +84,10 @@ public class Running_no extends AppCompatActivity {
         spDocName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                Doctor doctor=(Doctor) spDocName.getSelectedItem();
+                getset.setDocId(doctor.getDocId());
             }
+
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -111,11 +114,12 @@ public class Running_no extends AppCompatActivity {
     }
     void initialize()
     {
+        getset=new RunningNumberGetSet();
         db=new DbHandler(context);
         spSpeciality=(MaterialSpinner)findViewById(R.id.spSpeciality);
         spInstitute=(MaterialSpinner)findViewById(R.id.spInstitute);
         spDocName=(MaterialSpinner)findViewById(R.id.spDoctor);
-        getset=new RunningNumberGetSet();
+
         setInstName();
         setSpSpeciality();
         btn_bookAppointment=(FancyButton) findViewById(R.id.btn_Submit);
@@ -141,6 +145,16 @@ public class Running_no extends AppCompatActivity {
         doctorAdapter=new ArrayAdapter<Doctor>(this,android.R.layout.simple_spinner_item,db.getDocList(getset.getSpecialityId(),getset.getInstId()));
         doctorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spDocName.setAdapter(doctorAdapter);
+    }
+
+    void disableButton()
+    {
+        btn_bookAppointment.setEnabled(false);
+    }
+
+    void enableButton()
+    {
+        btn_bookAppointment.setEnabled(true);
     }
 
     private class callwebService extends AsyncTask<Void,Void,String>

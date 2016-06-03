@@ -16,6 +16,8 @@
 
 package com.med_presc_pat.Utilities;
 
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -37,9 +39,10 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
+        String instanceId=FirebaseInstanceId.getInstance().getId();
 
         // TODO: Implement this method to send any registration to your app's servers.
-        sendRegistrationToServer(refreshedToken);
+        sendRegistrationToServer(refreshedToken,instanceId);
     }
     // [END refresh_token]
 
@@ -51,7 +54,19 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
      *
      * @param token The new token.
      */
-    private void sendRegistrationToServer(String token) {
-        // Add custom implementation, as needed.
+    private void sendRegistrationToServer(String token,String instanceid) {
+
     }
+
+    private class sendTokentoServer extends AsyncTask<Void,Void,String>
+    {
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            return null;
+        }
+    }
+
+
 }

@@ -10,7 +10,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
+import com.google.firebase.crash.FirebaseCrash;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -22,7 +24,7 @@ public class MainScreen extends AppCompatActivity {
 Context context;
     String glbl_otp;
     FancyButton btn_newReg,btn_Running,btn_Appointment;
-
+    private static final String TAG = "MainScreen";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +32,7 @@ Context context;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         context=this;
+        FirebaseCrash.logcat(Log.INFO, TAG, "Crash button clicked");
         initialize();
         if(!glbl_otp.equals("notreceived"))
         {

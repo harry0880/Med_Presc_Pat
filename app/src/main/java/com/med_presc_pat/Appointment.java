@@ -232,7 +232,7 @@ void initialize()
         dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
             @Override
             public void onClick(SweetAlertDialog sweetAlertDialog) {
-               // new Book_Appointment().execute();
+                new Book_Appointment().execute();
                 dialog.dismiss();
             }
         });

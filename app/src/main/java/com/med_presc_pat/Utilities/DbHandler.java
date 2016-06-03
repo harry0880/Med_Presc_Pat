@@ -25,6 +25,7 @@ import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
+import com.google.firebase.crash.FirebaseCrash;
 
 import java.util.ArrayList;
 
@@ -37,8 +38,8 @@ public class DbHandler extends SQLiteOpenHelper {
     Context context;
 
     final String NameSpace="http://tempuri.org/";
-    //String URL="http://192.168.0.100/Service.asmx";
-    String URL="http://10.88.229.42:85/Service.asmx";
+    String URL="http://192.168.0.100/Service.asmx";
+   /* String URL="http://10.88.229.42:85/Service.asmx";*/
 
     String LoadMasterMathod = "Patientmaster";
     String SoapLinkMaster="http://tempuri.org/Patientmaster";
@@ -302,9 +303,15 @@ public class DbHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db=getReadableDatabase();
         Cursor cr=db.rawQuery("select * from "+DbConstant.T_Doc_Inst+" where "+ DbConstant.C_Doc_Inst_Scode +"='"+state+"' and "+DbConstant.C_Doc_Inst_Dcode+"='"+district+"';",null);
-        int cnt=cr.getCount();
-        cr.moveToFirst();
         ArrayList<InstituteName> instituteNames=new ArrayList<InstituteName>();
+      if(cr.getCount()<=0)
+        {
+            instituteNames.add(new InstituteName("0","No Institutes Available"));
+            return instituteNames;
+
+        }
+        cr.moveToFirst();
+
         do {
             instituteNames.add(new InstituteName(cr.getString(0),cr.getString(1)));
         }while (cr.moveToNext());
@@ -471,7 +478,9 @@ public class DbHandler extends SQLiteOpenHelper {
         catch (Exception e)
         {
             e.printStackTrace();
+            FirebaseCrash.report(e);
             return null;
+
         }
 
         return values;
@@ -504,7 +513,7 @@ public class DbHandler extends SQLiteOpenHelper {
 
         pi = new PropertyInfo();
         pi.setName("DoctorId");
-        pi.setValue(/*getset.getDocId()*/"11002");
+        pi.setValue(/*getset.getDocId()*/"10001");
         pi.setType(String.class);
         request.addProperty(pi);
 
@@ -538,8 +547,61 @@ public class DbHandler extends SQLiteOpenHelper {
             res=response.toString();
         } catch (Exception e) {
             e.printStackTrace();
+            FirebaseCrash.report(e);
             return "Error";
         }
         return res;
     }
+
+   /* public String CallWebService_Send_Token(String token,String InstanceId)
+    {
+        String res= null;
+        SoapObject request=new SoapObject(NameSpace, SendRunningNo);
+        PropertyInfo pi = new PropertyInfo();
+
+        pi.setName("Mobile");
+        pi.setValue(phone);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+            pi.setName("Instituteid");
+            pi.setValue(obj.getInstId());
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("specialityid");
+        pi.setValue(obj.getSpecialityId());
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("DoctorId");
+        pi.setValue(*//*obj.getDocId()*//*"11002");
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+        pi = new PropertyInfo();
+        pi.setName("Createdby");
+        pi.setValue(phone);
+        pi.setType(String.class);
+        request.addProperty(pi);
+
+
+        SoapSerializationEnvelope envolpe=new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envolpe.dotNet=true;
+        envolpe.setOutputSoapObject(request);
+        HttpTransportSE androidHTTP= new HttpTransportSE(URL);
+
+        try {
+            androidHTTP.call(SoapSend_RunningNo, envolpe);
+            SoapPrimitive response = (SoapPrimitive)envolpe.getResponse();
+            res=response.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error";
+        }
+        return res;
+    }*/
 }

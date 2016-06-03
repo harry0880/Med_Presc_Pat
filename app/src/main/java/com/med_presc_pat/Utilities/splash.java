@@ -29,7 +29,7 @@ public class splash extends AppCompatActivity {
         context=this;
         setContentView(R.layout.activity_splash);
         dbh=new DbHandler(splash.this);
-      //  instanceId= FirebaseInstanceId.getInstance().getToken();
+        instanceId= FirebaseInstanceId.getInstance().getToken();
         if(!doesDatabaseExist(getApplicationContext(),DbConstant.DBNAME))
         new LoadMaster().execute();
         else

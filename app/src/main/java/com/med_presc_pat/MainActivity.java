@@ -43,6 +43,7 @@ import android.widget.Toast;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import fr.ganfra.materialspinner.MaterialSpinner;
+import mehdi.sakout.fancybuttons.FancyButton;
 import swarajsaaj.smscodereader.interfaces.OTPListener;
 import swarajsaaj.smscodereader.receivers.OtpReader;
 
@@ -52,11 +53,11 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
     MaterialSpinner sp_District,sp_State;
     Context context;
-    ActionProcessButton btnSignIn;
+    FancyButton btnSignIn;
     ArrayAdapter<District> districtAdapter;
     ArrayAdapter<State> stateAdapter;
     String[] initDistrict = {"District"};
-    Boolean state_spinner_flag=false,District_spinnewr_flag=false;
+    Boolean state_spinner_flag=false,District_spinner_flag=false;
     PatientRegistrationGetSet getset;
     MaterialDialog processdialog;
     SharedPreferences prefs;
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                     State state = ((State) sp_State.getSelectedItem());
                     getset.setState(state.getStateId());
                     setDistrictSpinner(state.getStateId());
-                    District_spinnewr_flag = false;
+                    District_spinner_flag = false;
                 }
                 state_spinner_flag = true;
             }
@@ -99,11 +100,11 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         sp_District.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position>0 && District_spinnewr_flag) {
+                if (position>0 && District_spinner_flag) {
                     District district = ((District) sp_District.getSelectedItem());
                     getset.setDtsrict(district.getDistrict_Id());
                 }
-                District_spinnewr_flag = true;
+                District_spinner_flag = true;
             }
 
             @Override
@@ -175,16 +176,13 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         sp_District=(MaterialSpinner) findViewById(R.id.spDistrict);
         sp_State=(MaterialSpinner) findViewById(R.id.spState);
         db=new DbHandler(MainActivity.this);
-        btnSignIn = (ActionProcessButton) findViewById(R.id.btnSignIn);
-        btnSignIn.setMode(ActionProcessButton.Mode.ENDLESS);
+        btnSignIn = (FancyButton) findViewById(R.id.btnSignIn);
+
 
 
     }
 
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(MainActivity.this,AndroidDatabaseManager.class));
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -350,6 +348,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                /* if(glbl_otp.equals())*/
             }
-        }).show();
+        }).canceledOnTouchOutside(false);
     }
 }
